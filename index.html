@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHALON | 業務をAIで"使える状態"にする</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0f1f4a;
+  --navy-mid: #1a3270;
+  --navy-light: #2a4a9e;
+  --cyan: #1d6fa8;
+  --cyan-dim: #3b87bf;
+  --black: #080e1f;
+  --gray-800: #1a2030;
+  --gray-700: #2d3748;
+  --gray-600: #4a5568;
+  --gray-400: #718096;
+  --gray-200: #e2e8f0;
+  --gray-100: #f7f9fc;
+  --white: #ffffff;
+  --page-bg: #f9fafc;
+  --font-jp: 'Noto Sans JP', sans-serif;
+  --font-en: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-jp);
+  background: var(--page-bg);
+  color: var(--gray-700);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,22,40,0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(56,189,248,0.15);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+}
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-logo-name {
+  font-family: var(--font-en);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--white);
+}
+.nav-logo-sub {
+  font-family: var(--font-en);
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.3);
+  display: none;
+}
+@media (min-width: 640px) {
+  .nav-logo-sub { display: inline; }
+}
+.nav-btn {
+  font-family: var(--font-jp);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--black);
+  background: var(--cyan);
+  padding: 8px 22px;
+  border-radius: 4px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+}
+.nav-btn:hover { opacity: 0.85; }
+
+/* COMMON */
+.wrap { max-width: 900px; margin: 0 auto; }
+section { padding: 100px 6%; }
+
+.s-label {
+  font-family: var(--font-en);
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+.s-title {
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+  margin-bottom: 20px;
+}
+.s-body {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+  line-height: 2.1;
+  max-width: 600px;
+}
+
+/* HERO */
+#hero {
+  background: linear-gradient(160deg, #0a1628 0%, #0f1f4a 100%);
+  padding-top: 164px;
+  padding-bottom: 120px;
+  position: relative;
+  overflow: hidden;
+}
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -100px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.hero-logo-img { height: 80px; width: auto; filter: brightness(0) invert(1); }
+.hero-logo-name {
+  font-family: var(--font-en);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--white);
+  line-height: 1;
+}
+.hero-eyebrow {
+  font-family: var(--font-en);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 24px;
+}
+.hero-headline {
+  font-size: clamp(1.8rem, 4.2vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.48;
+  letter-spacing: -0.015em;
+  color: var(--white);
+  margin-bottom: 28px;
+}
+.hero-headline em {
+  font-style: normal;
+  color: var(--cyan);
+}
+.hero-desc {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+.hero-sub {
+  font-size: 0.94rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 2.1;
+  max-width: 520px;
+  margin-bottom: 48px;
+}
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-block;
+  background: var(--cyan);
+  color: var(--black);
+  padding: 14px 36px;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost {
+  display: inline-block;
+  background: transparent;
+  color: var(--white);
+  padding: 13px 36px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  font-size: 0.88rem;
+  font-weight: 400;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.5); }
+
+/* OVERVIEW */
+#overview { background: var(--white); border-bottom: 1px solid var(--gray-200); }
+#overview .s-title { color: var(--navy); }
+.overview-body {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+  line-height: 2.2;
+  max-width: 620px;
+}
+.overview-quote {
+  margin-top: 32px;
+  padding: 24px 28px;
+  border-left: 3px solid var(--navy);
+  background: var(--gray-100);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.88rem;
+  color: var(--gray-600);
+  line-height: 2.2;
+}
+
+/* PROBLEMS */
+#problems { background: var(--gray-100); }
+#problems .s-title { color: var(--navy); }
+.problem-list {
+  margin-top: 48px;
+  border-top: 1px solid var(--gray-200);
+}
+.problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+.problem-num {
+  font-family: var(--font-en);
+  font-size: 0.68rem;
+  font-weight: 300;
+  color: var(--gray-200);
+  width: 28px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.problem-text {
+  font-size: 0.9rem;
+  color: var(--gray-800);
+  line-height: 1.9;
+}
+
+/* WHAT */
+#what { background: #0f1f4a; }
+#what .s-label { color: var(--cyan); }
+#what .s-title { color: var(--white); }
+.what-body {
+  font-size: 0.92rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 2.1;
+  max-width: 560px;
+  margin-bottom: 48px;
+}
+.what-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.what-card { background: #0f1f4a; padding: 32px 24px; }
+.what-card-num {
+  font-family: var(--font-en);
+  font-size: 0.64rem;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+.what-card h3 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.what-card p {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 2;
+}
+.what-note {
+  margin-top: 32px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.28);
+  line-height: 2;
+}
+
+/* TOOLS SECTION */
+#tools { background: var(--white); border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
+#tools .s-title { color: var(--navy); }
+.tools-intro {
+  font-size: 0.92rem;
+  color: var(--gray-600);
+  line-height: 2.1;
+  max-width: 600px;
+  margin-bottom: 64px;
+}
+
+/* FLOW DIAGRAM */
+.tool-block {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 40px 36px 48px;
+  margin-bottom: 32px;
+}
+.tool-block:last-child { margin-bottom: 0; }
+.tool-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.tool-badge {
+  font-family: var(--font-en);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--navy);
+  padding: 4px 12px;
+  border-radius: 3px;
+}
+.tool-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.tool-desc {
+  font-size: 0.84rem;
+  color: var(--gray-600);
+  line-height: 1.9;
+  margin-bottom: 36px;
+  margin-top: 6px;
+}
+
+/* FLOW DIAGRAM VISUAL */
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+.flow-node {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.flow-box {
+  background: var(--gray-100);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 14px 18px;
+  min-width: 120px;
+  text-align: center;
+}
+.flow-box.highlight {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.flow-box.ai {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px rgba(56,189,248,0.2);
+}
+.flow-box-icon {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+  display: block;
+}
+.flow-box-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.4;
+}
+.flow-box.highlight .flow-box-label,
+.flow-box.ai .flow-box-label {
+  color: var(--white);
+}
+.flow-box-sub {
+  font-size: 0.64rem;
+  color: var(--gray-400);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.flow-box.highlight .flow-box-sub,
+.flow-box.ai .flow-box-sub {
+  color: rgba(255,255,255,0.5);
+}
+.flow-arrow {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 24px;
+}
+.flow-arrow-line {
+  width: 32px;
+  height: 2px;
+  background: var(--gray-200);
+  position: relative;
+}
+.flow-arrow-line::after {
+  content: '';
+  position: absolute;
+  right: -1px; top: -4px;
+  border: 5px solid transparent;
+  border-left-color: var(--gray-400);
+  border-right: none;
+}
+.flow-arrow-label {
+  font-size: 0.6rem;
+  color: var(--gray-400);
+  margin-top: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.flow-note-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.flow-note-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  background: var(--gray-100);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+.flow-note-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* AFTER */
+#after { background: var(--gray-100); }
+#after .s-title { color: var(--navy); }
+.after-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--gray-200);
+  margin-top: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+.after-item { background: var(--white); padding: 32px 28px; transition: background 0.15s; }
+.after-icon {
+  width: 36px; height: 36px;
+  background: var(--navy);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 14px;
+  color: var(--cyan);
+}
+.after-item h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.after-item p {
+  font-size: 0.82rem;
+  color: var(--gray-600);
+  line-height: 2;
+}
+
+/* FLOW */
+#flow { background: var(--white); border-top: 1px solid var(--gray-200); }
+#flow .s-title { color: var(--navy); }
+.flow-list {
+  margin-top: 48px;
+  border-top: 1px solid var(--gray-200);
+}
+.flow-item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--gray-200);
+  align-items: start;
+}
+.flow-step-num {
+  font-family: var(--font-en);
+  font-size: 0.66rem;
+  font-weight: 300;
+  color: var(--cyan);
+  padding-top: 3px;
+  letter-spacing: 0.1em;
+}
+.flow-item h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.flow-item p {
+  font-size: 0.84rem;
+  color: var(--gray-600);
+  line-height: 1.95;
+}
+.flow-note {
+  margin-top: 24px;
+  font-size: 0.83rem;
+  color: var(--gray-600);
+  line-height: 2;
+}
+
+/* PRICING */
+#pricing { background: var(--gray-100); }
+#pricing .s-title { color: var(--navy); }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+.pricing-card {
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 32px 28px;
+  background: var(--white);
+}
+.pricing-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--navy-light);
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+.pricing-amount {
+  font-family: var(--font-en);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.pricing-desc {
+  font-size: 0.83rem;
+  color: var(--gray-600);
+  line-height: 1.9;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--gray-200);
+}
+.pricing-note {
+  grid-column: 1 / -1;
+  background: var(--gray-100);
+  border-radius: 6px;
+  padding: 18px 22px;
+  font-size: 0.82rem;
+  color: var(--gray-600);
+  line-height: 2;
+}
+
+/* FAQ */
+#faq { background: var(--navy); }
+#faq .s-label { color: var(--cyan); }
+#faq .s-title { color: var(--white); }
+.faq-list {
+  margin-top: 48px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.faq-item {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+}
+.faq-q {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.7;
+  user-select: none;
+}
+.faq-q::after {
+  content: '+';
+  font-family: var(--font-en);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--cyan);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  margin-top: 1px;
+}
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-a-inner {
+  padding: 0 0 22px;
+  font-size: 0.87rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 2.1;
+}
+
+/* CONTACT */
+#contact { background: #0a1628; }
+#contact .s-label { color: var(--cyan); }
+#contact .s-title { color: var(--white); }
+.contact-sub {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 2.1;
+  max-width: 540px;
+  margin-bottom: 48px;
+}
+.contact-info { display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; }
+.contact-row { display: flex; align-items: center; gap: 14px; }
+.contact-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.3);
+  width: 52px;
+  flex-shrink: 0;
+  letter-spacing: 0.08em;
+}
+.contact-val { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+.contact-note {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.25);
+  margin: 8px 0 32px;
+  line-height: 1.8;
+}
+.btn-contact {
+  display: inline-block;
+  background: var(--cyan);
+  color: var(--black);
+  padding: 15px 44px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+}
+.btn-contact:hover { opacity: 0.85; }
+
+.contact-privacy {
+  margin-top: 24px;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.28);
+  line-height: 1.9;
+  max-width: 560px;
+}
+.contact-mail-link {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+}
+
+/* FOOTER */
+footer {
+  background: #080e1f;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 28px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-logo-img { height: 24px; width: auto; filter: brightness(0) invert(1); opacity: 0.4; }
+.footer-logo-name {
+  font-family: var(--font-en);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+}
+.footer-copy { font-size: 0.7rem; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; }
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  section { padding: 72px 5%; }
+  nav { padding: 0 5%; }
+  #hero { padding-top: 124px; padding-bottom: 80px; }
+  .what-grid { grid-template-columns: 1fr; }
+  .after-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-note { grid-column: 1; }
+  .flow-item { grid-template-columns: 56px 1fr; }
+  .flow-diagram { flex-wrap: nowrap; }
+}
+
+/* DEMO BUTTONS */
+.demo-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.demo-btn {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 9px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.demo-btn:hover { opacity: 0.75; }
+.demo-btn-watch {
+  background: rgba(29,111,168,0.08);
+  color: var(--cyan);
+  border: 1px solid rgba(29,111,168,0.3);
+}
+.demo-btn-try {
+  background: var(--cyan);
+  color: var(--black);
+}
+.demo-note {
+  margin-top: 10px;
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  line-height: 1.8;
+}
+
+
+/* ── DEMO CARDS ── */
+.tools-intro {
+  font-size: 0.88rem;
+  color: var(--gray-400);
+  line-height: 2;
+  margin-bottom: 40px;
+}
+.demo-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(15,31,74,0.06);
+}
+.demo-card-pending {
+  opacity: 0.6;
+}
+.demo-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.demo-badge {
+  font-family: var(--font-en);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  background: var(--navy);
+  color: var(--white);
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.demo-badge-pending {
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+.demo-card-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+.demo-card-desc {
+  font-size: 0.86rem;
+  color: var(--gray-600);
+  line-height: 2;
+  margin-bottom: 16px;
+}
+.demo-tag-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.demo-tag {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  padding: 3px 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── BEFORE / AFTER ── */
+.demo-before-after {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 20px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+.demo-before, .demo-after {
+  flex: 1;
+  padding: 16px;
+}
+.demo-before { background: var(--gray-100); }
+.demo-after { background: rgba(29,111,168,0.06); }
+.demo-arrow {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 1.2rem;
+  color: var(--gray-400);
+  background: var(--gray-100);
+}
+.demo-ba-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 6px;
+}
+.demo-ba-text {
+  font-size: 0.83rem;
+  color: var(--gray-700);
+  line-height: 1.8;
+}
+.tools-footer-note {
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  line-height: 1.9;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* ── PRICING CONTEXT ── */
+.pricing-context {
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+}
+.pricing-context-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+.pricing-context p {
+  font-size: 0.83rem;
+  color: var(--gray-600);
+  line-height: 2;
+}
+
+/* ── CONTACT BADGES ── */
+.contact-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 28px;
+}
+.contact-badge {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 600px) {
+  .demo-before-after { flex-direction: column; }
+  .demo-arrow { padding: 8px; justify-content: center; transform: rotate(90deg); }
+  .pricing-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="logo-link">
+    <span class="nav-logo-name">WHALON</span>
+  </a>
+  <a href="#contact" class="nav-btn">相談する</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wrap">
+    <h1 class="hero-headline">
+      会社はそのまま。<br><br>
+      でも、<br>
+      <em>手作業は減っていく。</em>
+    </h1>
+    <p class="hero-sub">
+      WHALONは、<br>
+      AIや自動化を、<br>
+      "現場に馴染む形"へ整えます。<br><br>
+      いきなり全部は変えません。<br><br>
+      まずは1業務だけ、<br>
+      人が確認できる形で、<br>
+      小さく試しながら、<br>
+      少しずつ現場へ馴染ませます。
+    </p>
+    <div class="btn-row">
+      <a href="#tools" class="btn-primary">実際の改善例を見る</a>
+      <a href="#contact" class="btn-ghost">1業務だけ相談する</a>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="wrap">
+    <p class="s-label">About</p>
+    <h2 class="s-title">WHALONとは</h2>
+    <p class="overview-body">
+      WHALONは、<br>
+      AIを導入する会社ではありません。<br><br>
+      人が手で回している業務を整理し、<br>
+      AIや自動化を、<br>
+      "現場に馴染む形"へ整えていく<br>
+      業務改善・運用整理の会社です。<br><br>
+      いきなり全部を変えるのではなく、<br>
+      まずは1業務だけ。<br><br>
+      人が確認できる形を残しながら、<br>
+      小さく試しながら、<br>
+      少しずつ現場へ馴染ませていきます。<br><br>
+      目指しているのは「AI化」ではなく、<br>
+      少人数でも、現場が無理なく回りやすい状態です。
+    </p>
+    <blockquote class="overview-quote">
+      「毎回同じ手作業が発生している」<br>
+      「担当者しか分からない業務がある」<br>
+      「ツールを入れたが、現場で使われていない」<br>
+      「少し楽にしたいだけなのに、話が大きくなりすぎる」<br><br>
+      まずは1業務だけ、<br>
+      人が確認できる形で、<br>
+      小さく試せる状態を作ります。
+    </blockquote>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section id="problems">
+  <div class="wrap">
+    <p class="s-label">Problems</p>
+    <h2 class="s-title">こんな状態で、<br>止まっていませんか？</h2>
+    <div class="problem-list">
+      <div class="problem-item"><span class="problem-num">01</span><span class="problem-text">AIを導入したいが、現場が混乱しそうで止まっている</span></div>
+      <div class="problem-item"><span class="problem-num">02</span><span class="problem-text">問い合わせ・依頼の整理が、まだ人力で回っている</span></div>
+      <div class="problem-item"><span class="problem-num">03</span><span class="problem-text">転記・確認作業に、毎回時間を取られている</span></div>
+      <div class="problem-item"><span class="problem-num">04</span><span class="problem-text">担当者しか分からない業務がある</span></div>
+      <div class="problem-item"><span class="problem-num">05</span><span class="problem-text">結局、人が何度も確認している</span></div>
+      <div class="problem-item"><span class="problem-num">06</span><span class="problem-text">人手不足だが、高額なDX（業務全体の整理・効率化）までは踏み切れない</span></div>
+      <div class="problem-item"><span class="problem-num">07</span><span class="problem-text">ツールを入れたが、現場に定着しなかった</span></div>
+      <div class="problem-item"><span class="problem-num">08</span><span class="problem-text">「少し楽にしたい」だけなのに、話が大きくなりすぎる</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT -->
+<section id="what">
+  <div class="wrap">
+    <p class="s-label">What We Do</p>
+    <h2 class="s-title">WHALONがやること</h2>
+    <p class="what-body">
+      WHALONは、業務全体を一気に変えるのではなく、<br>
+      まずは1業務だけ、小さく整理するところから始めます。<br><br>
+      AIや自動化を、"現場に馴染む形"へ整えながら、<br>
+      少人数でも回りやすい状態を少しずつ作っていきます。
+    </p>
+    <div class="what-grid">
+      <div class="what-card">
+        <p class="what-card-num">01</p>
+        <h3>現場業務の整理</h3>
+        <p>現在の業務フローを確認し、どこで手間・確認・属人化が発生しているかを整理します。</p>
+      </div>
+      <div class="what-card">
+        <p class="what-card-num">02</p>
+        <h3>小さく設計・実装</h3>
+        <p>いきなり全体を変えるのではなく、まずは1業務だけ。人が確認できる形を残しながら、小さく試せる状態を設計・実装します。</p>
+      </div>
+      <div class="what-card">
+        <p class="what-card-num">03</p>
+        <h3>現場へ馴染ませる</h3>
+        <p>導入して終わりではなく、現場で無理なく回る状態になるまで、調整・改善・運用整理を行います。</p>
+      </div>
+    </div>
+    <p class="what-note">※ WHALONは、「全社DX（業務全体を一気に変えること）」ではなく、まず1業務から、小さく整えることを重視しています。</p>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="wrap">
+    <p class="s-label">実例 / Demo</p>
+    <h2 class="s-title">実際に整えている業務</h2>
+    <p class="tools-intro">
+      WHALONが実際に設計・実装している業務改善の例です。<br>
+      「現場で回るか」を重視しながら、小さく試せる形で公開しています。
+    </p>
+
+    <!-- ============================================================
+      デモカードの追加方法：
+      以下の .demo-card ブロックをコピーして追加するだけです。
+      hrefのコメント箇所にURLを差し替えてください。
+    ============================================================ -->
+
+    <!-- DEMO CARD 01 -->
+    <div class="demo-card">
+      <div class="demo-card-head">
+        <span class="demo-badge">実例 01</span>
+        <h3 class="demo-card-title">AI議事録整理</h3>
+      </div>
+      <p class="demo-card-desc">
+        会議メモや音声内容を整理し、議事録としてまとめる業務を、半自動化しています。<br>
+        書き起こし・整理・要約の手作業を減らし、最終確認だけ人が行う形を想定しています。
+      </p>
+      <div class="demo-before-after">
+        <div class="demo-before">
+          <p class="demo-ba-label">Before</p>
+          <p class="demo-ba-text">会議後、毎回30分〜1時間かけて議事録を手作業で整理</p>
+        </div>
+        <div class="demo-arrow">→</div>
+        <div class="demo-after">
+          <p class="demo-ba-label">After</p>
+          <p class="demo-ba-text">AIが下書きを整理し、人が確認・修正するだけの状態へ</p>
+        </div>
+      </div>
+      <div class="demo-tag-row">
+        <span class="demo-tag">議事録整理</span>
+        <span class="demo-tag">確認削減</span>
+        <span class="demo-tag">半自動化</span>
+      </div>
+      <div class="demo-btn-row">
+        <!-- 議事録AI デモURL差し替え箇所 -->
+        <a href="https://files-one-virid.vercel.app" target="_blank" rel="noopener" class="demo-btn demo-btn-try">実際に試してみる</a>
+      </div>
+      <p class="demo-note">※ 機密情報の入力はお控えください。試した後に軽く相談することもできます。</p>
+    </div>
+
+    <!-- DEMO CARD 02（追加予定） -->
+    <div class="demo-card demo-card-pending">
+      <div class="demo-card-head">
+        <span class="demo-badge demo-badge-pending">準備中</span>
+        <h3 class="demo-card-title">問い合わせ整理・追客管理</h3>
+      </div>
+      <p class="demo-card-desc">
+        問い合わせ内容を整理し、対応漏れを減らすための業務整理ツールを準備しています。<br>
+        メール・問い合わせ・対応状況を、確認しやすい形へ整える想定です。
+      </p>
+      <div class="demo-tag-row">
+        <span class="demo-tag">問い合わせ整理</span>
+        <span class="demo-tag">対応漏れ防止</span>
+        <span class="demo-tag">確認整理</span>
+      </div>
+      <p class="demo-note" style="margin-top:16px;">デモは近日公開予定です。</p>
+    </div>
+
+    <p class="tools-footer-note">※ WHALONでは、最初から完全自動化を前提にしません。人が確認できる状態を残しながら、少しずつ現場へ馴染ませていきます。</p>
+  </div>
+</section>
+
+<!-- AFTER -->
+<section id="after">
+  <div class="wrap">
+    <p class="s-label">Results</p>
+    <h2 class="s-title">導入後の変化</h2>
+    <div class="after-grid">
+      <div class="after-item">
+        <div class="after-icon">✦</div>
+        <h3>手入力・転記作業が減る</h3>
+        <p>毎回手で入力・転記していた作業を整理し、確認中心の運用へ近づけます。</p>
+      </div>
+      <div class="after-item">
+        <div class="after-icon">✦</div>
+        <h3>確認回数が減る</h3>
+        <p>「ちゃんと送ったか」「記録したか」を何度も確認する状態を、少しずつ整理します。</p>
+      </div>
+      <div class="after-item">
+        <div class="after-icon">✦</div>
+        <h3>対応漏れ・入力ミスを減らす</h3>
+        <p>人の記憶や手作業に依存していた部分を、整理しやすい状態へ整えます。</p>
+      </div>
+      <div class="after-item">
+        <div class="after-icon">✦</div>
+        <h3>担当者依存を軽くする</h3>
+        <p>「この人しか分からない」状態を減らし、少人数でも回りやすい形を目指します。</p>
+      </div>
+      <div class="after-item">
+        <div class="after-icon">✦</div>
+        <h3>現場を大きく変えずに始められる</h3>
+        <p>いきなり全体を変えるのではなく、まずは1業務だけ、小さく試せる形で導入します。</p>
+      </div>
+    </div>
+    <p class="what-note">WHALONは、「AI化そのもの」ではなく、現場を壊さず、少しずつ運用負担を減らしていくことを重視しています。</p>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <div class="wrap">
+    <p class="s-label">Process</p>
+    <h2 class="s-title">導入の流れ</h2>
+    <div class="flow-list">
+      <div class="flow-item"><span class="flow-step-num">STEP 01</span><div><h3>現場ヒアリング</h3><p>現在どんな作業が大変か、どこで確認・手間・属人化が発生しているかを確認します。「何を相談すればいいか分からない」段階でも問題ありません。</p></div></div>
+      <div class="flow-item"><span class="flow-step-num">STEP 02</span><div><h3>対象業務を1つ整理</h3><p>いきなり全体を変えるのではなく、まずは1業務だけ。改善する範囲を、小さく整理します。</p></div></div>
+      <div class="flow-item"><span class="flow-step-num">STEP 03</span><div><h3>小さく設計・テスト</h3><p>人が確認できる形を残しながら、小さく試せる状態を設計します。必要に応じて、実際の業務でテストを行います。</p></div></div>
+      <div class="flow-item"><span class="flow-step-num">STEP 04</span><div><h3>現場へ馴染ませる</h3><p>導入して終わりではなく、現場で無理なく回る状態になるまで、調整・改善を行います。</p></div></div>
+      <div class="flow-item"><span class="flow-step-num">STEP 05</span><div><h3>継続運用・整理</h3><p>運用しながら、確認フロー・整理方法・改善点を調整し、少人数でも回りやすい状態を目指します。</p></div></div>
+    </div>
+    <p class="flow-note">WHALONでは、最初から全体を大きく変える提案は行いません。まずは1業務だけ、小さく試しながら整理していきます。</p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <p class="s-label">Pricing</p>
+    <h2 class="s-title">料金モデル</h2>
+    <p class="s-body">WHALONでは、「まず1業務だけ」小さく試す形を前提にしています。業務内容・規模・確認フローによって変わるため、ヒアリング後にご案内します。</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-tag">小規模テスト導入</p>
+        <p class="pricing-amount">5万円〜15万円前後</p>
+        <p class="pricing-desc">まずは1業務だけ、小さく試すための導入です。人が確認できる状態を残しながら、現場へ少しずつ馴染ませます。</p>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-tag">継続運用サポート</p>
+        <p class="pricing-amount">月3万円〜15万円前後</p>
+        <p class="pricing-desc">導入後の調整・改善・確認フロー整理など、現場で回りやすい状態を維持するための運用サポートです。</p>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-tag">個別整理・追加対応</p>
+        <p class="pricing-amount">内容に応じて個別見積もり</p>
+        <p class="pricing-desc">複数業務・特殊フロー・外部サービス連携などは、内容に応じて整理・設計を行います。</p>
+      </div>
+    </div>
+    <div class="pricing-context">
+      <h3 class="pricing-context-title">なぜ小さく始めるのか？</h3>
+      <p>一般的なDX（業務全体の整理・効率化）や業務改善コンサルでは、数十万円〜数百万円規模になるケースがあります。また、RPA（手作業を自動化する仕組み）やAI導入支援でも、初期費用や月額費用が発生することが一般的です。</p>
+      <p style="margin-top:12px;">WHALONでは、最初から全体を大きく変えるのではなく、まずは1業務だけ、小さく整理・テストしながら、現場へ馴染ませていくことを重視しています。</p>
+    </div>
+    <div class="pricing-note">WHALONでは、最初から大規模な導入を前提にしません。まずは小さく試し、実際に回るかを確認しながら進めます。相談・見積もり段階で、突然契約や高額請求を行うことはありません。</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <p class="s-label">FAQ</p>
+    <h2 class="s-title">よくある質問</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">AIに詳しくなくても相談できますか？</div>
+        <div class="faq-a"><div class="faq-a-inner">はい。WHALONでは、AIそのものではなく、「今どこが大変か」を整理するところから始めます。AIやITの知識がない状態でも問題ありません。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">何を相談すればいいか分からなくても大丈夫ですか？</div>
+        <div class="faq-a"><div class="faq-a-inner">大丈夫です。「毎回確認している」「転記が多い」「人手が足りない」など、今の困りごとから整理していきます。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">いきなり大きな導入になりますか？</div>
+        <div class="faq-a"><div class="faq-a-inner">いいえ。WHALONでは、まず1業務だけ、小さく試す形を前提にしています。最初から全社DX（業務全体を一気に変えること）を前提にした提案は行いません。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">AIのミスや事故が不安です</div>
+        <div class="faq-a"><div class="faq-a-inner">WHALONでは、「AIが完璧に動くこと」を前提にしません。人が確認できる形を残しながら、小さく試し、問題が広がりにくい形を重視しています。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">導入後のサポートはありますか？</div>
+        <div class="faq-a"><div class="faq-a-inner">はい。導入後も、運用整理・改善・確認フロー調整などを行いながら、現場で回りやすい状態を維持していきます。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">どんな業種でも相談できますか？</div>
+        <div class="faq-a"><div class="faq-a-inner">業種を問わず、繰り返し発生する確認・転記・整理業務がある場合、対応できる可能性があります。まずは現在の業務内容を確認しながら、整理できそうか一緒に見ていきます。</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">相談したら契約しないといけませんか？</div>
+        <div class="faq-a"><div class="faq-a-inner">いいえ。相談・見積もり段階で、無理な契約や営業を行うことはありません。まずは、「小さく試せそうか」を一緒に整理します。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <p class="s-label">Contact</p>
+    <h2 class="s-title">まずは1業務だけ、<br>軽く相談してみる</h2>
+    <p class="contact-sub">
+      「こういう作業が大変」という段階からで問題ありません。<br>
+      WHALONでは、いきなり大きな提案を行わず、<br>
+      まずは、現場で何が負担になっているかを<br>
+      整理するところから始めます。
+    </p>
+    <div class="contact-badges">
+      <span class="contact-badge">相談・見積もり無料</span>
+      <span class="contact-badge">小規模から相談可能</span>
+      <span class="contact-badge">AIの知識不要</span>
+      <span class="contact-badge">まず1業務だけでもOK</span>
+    </div>
+    <div class="contact-info">
+      <div class="contact-row">
+        <span class="contact-label">MAIL</span>
+        <!-- メールアドレス差し替え箇所 -->
+        <span class="contact-val">whalonzhushihuishe@gmail.com</span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">TEL</span>
+        <!-- 電話番号差し替え箇所 -->
+        <span class="contact-val">（準備中）</span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">HOURS</span>
+        <!-- 営業時間差し替え箇所 -->
+        <span class="contact-val">平日 10:00〜18:00</span>
+      </div>
+    </div>
+    <p class="contact-note">※ 相談・見積もりは無料です。</p>
+
+    <!-- GoogleフォームURL差し替え箇所 -->
+    <a href="#" class="btn-contact">1業務だけ相談する</a>
+
+    <p class="contact-mail-link">
+      「まだ導入するか決めていない」段階でも問題ありません。<br>
+      まずは、今の業務で大変なことを整理しながらお話を伺います。<br>
+      メールでのご連絡は
+      <!-- メールアドレス差し替え箇所 -->
+      <a href="mailto:whalonzhushihuishe@gmail.com" style="color:rgba(255,255,255,0.45);text-decoration:underline;">whalonzhushihuishe@gmail.com</a>
+    </p>
+
+    <!-- ④ 個人情報の取扱い -->
+    <p class="contact-privacy">
+      お問い合わせでいただいた情報は、相談内容の確認・ご連絡のためにのみ使用します。第三者への提供は行いません。
+    </p>
+  </div>
+</section>
+
+<!-- SNS / 実験ログ -->
+<section id="sns" style="background:#0a1628;padding:48px 6%;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
+  <p style="font-family:var(--font-en);font-size:0.62rem;letter-spacing:0.22em;color:rgba(255,255,255,0.25);margin-bottom:16px;">LOG / SNS</p>
+  <p style="font-size:0.82rem;color:rgba(255,255,255,0.3);line-height:2;margin-bottom:24px;">
+    実装の記録や、業務改善の観察を発信しています。
+  </p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <!-- X(Twitter)URL差し替え箇所 -->
+    <a href="#" style="font-size:0.78rem;color:rgba(255,255,255,0.35);letter-spacing:0.08em;text-decoration:none;border:1px solid rgba(255,255,255,0.12);padding:8px 20px;border-radius:4px;">X（Twitter）</a>
+    <!-- NoteURL差し替え箇所 -->
+    <a href="#" style="font-size:0.78rem;color:rgba(255,255,255,0.35);letter-spacing:0.08em;text-decoration:none;border:1px solid rgba(255,255,255,0.12);padding:8px 20px;border-radius:4px;">note</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo-wrap">
+    <span class="footer-logo-name">WHALON</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:flex-end;">
+    <!-- メールアドレス差し替え箇所 -->
+    <a href="mailto:whalonzhushihuishe@gmail.com" style="font-size:0.7rem;color:rgba(255,255,255,0.25);letter-spacing:0.06em;text-decoration:none;">whalonzhushihuishe@gmail.com</a>
+    <!-- 責任者名差し替え箇所 -->
+    <span style="font-size:0.7rem;color:rgba(255,255,255,0.2);letter-spacing:0.06em;">代表：種田 海人</span>
+    <a href="tokutei.html" style="font-size:0.7rem;color:rgba(255,255,255,0.25);letter-spacing:0.06em;text-decoration:none;">特定商取引法に基づく表記</a>
+    <span class="footer-copy">© 2026 WHALON. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-a').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      const a = item.querySelector('.faq-a');
+      a.style.maxHeight = a.scrollHeight + 'px';
+    }
+  });
+});
+</script>
+</body>
+</html>
